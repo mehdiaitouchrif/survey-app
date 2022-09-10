@@ -1,17 +1,21 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const connectDB = require("./db/connect");
 
 // init app
 const app = express();
 dotenv.config();
+
+// connect to mongodb
+connectDB();
 
 // middleware
 app.use(express.json());
 app.use(morgan("dev"));
 
 // health check
-app.get("/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.send("App healthy!");
 });
 
