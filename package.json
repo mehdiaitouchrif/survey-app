@@ -1,0 +1,30 @@
+{
+  "name": "survey-app",
+  "version": "1.0.0",
+  "description": "Survey administration web app, inspired by Google forms",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server",
+    "dev": "nodemon backend/server"
+  },
+  "keywords": [
+    "survey",
+    "polls",
+    "questionnaires",
+    "application",
+    "web",
+    "full-stack",
+    "node.js"
+  ],
+  "author": "Mehdi Ait Ouchrif",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
