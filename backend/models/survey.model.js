@@ -17,6 +17,12 @@ surveySchema.virtual("questions", {
   justOne: false,
 });
 
+// Remove questions on survey deletion
+surveySchema.pre("remove", async function (next) {
+  await this.model("Question").deleteMany({ survey: this._id });
+  next();
+});
+
 const Survey = mongoose.model("Survey", surveySchema);
 
 module.exports = Survey;
