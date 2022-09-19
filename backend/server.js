@@ -20,6 +20,8 @@ app.get("/api/health", (req, res) => {
 });
 
 // routers
+app.use("/api/surveys", require("./routes/survey.routes"));
+app.use("/api/questions", require("./routes/questions.routes"));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
