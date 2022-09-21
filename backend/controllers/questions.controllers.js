@@ -27,3 +27,30 @@ exports.getQuestion = async (req, res, next) => {
 
   res.status(200).json({ question });
 };
+
+// Update question
+exports.updateQuestion = async (req, res, next) => {
+  let question = await Question.findById(req.params.id);
+  if (!question) {
+    return res.status(404).json({ message: "No question found" });
+  }
+
+  question = await Question.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({ question });
+};
+
+// Delete question
+exports.deleteQuestion = async (req, res, next) => {
+  const question = await Question.findById(req.params.id);
+  if (!question) {
+    return res.status(404).json({ message: "No question found" });
+  }
+
+  question.remove();
+
+  res.status(200).json({ message: "Question removed" });
+};

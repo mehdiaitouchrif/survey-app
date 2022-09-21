@@ -3,6 +3,8 @@ const {
   getSurveys,
   createSurvey,
   getSurvey,
+  updateSurvey,
+  deleteSurvey,
 } = require("../controllers/survey.controllers");
 const router = express.Router();
 
@@ -11,6 +13,6 @@ const questionRouter = require("./questions.routes");
 router.use("/:surveyId/questions", questionRouter);
 
 router.route("/").get(getSurveys).post(createSurvey);
-router.get("/:id", getSurvey);
+router.route("/:id").get(getSurvey).put(updateSurvey).delete(deleteSurvey);
 
 module.exports = router;

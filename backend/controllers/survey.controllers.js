@@ -22,3 +22,30 @@ exports.getSurvey = async (req, res, next) => {
 
   res.status(200).json({ survey });
 };
+
+// Update survey
+exports.updateSurvey = async (req, res, next) => {
+  let survey = await Survey.findById(req.params.id).populate("questions");
+  if (!survey) {
+    return res.status(404).json({ message: "No survey found" });
+  }
+
+  survey = await Survey.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({ survey });
+};
+
+// Delete survey
+exports.deleteSurvey = async (req, res, next) => {
+  const survey = await Survey.findById(req.params.id).populate("questions");
+  if (!survey) {
+    return res.status(404).json({ message: "No survey found" });
+  }
+
+  survey.remove();
+
+  res.status(200).json({ message: "Survey removed" });
+};
