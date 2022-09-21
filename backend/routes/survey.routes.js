@@ -17,16 +17,17 @@ const {
   updateSurveySchema,
   deleteSurveySchema,
 } = require("../schemas/survey.schemas");
+const requireAuth = require("../middleware/auth.middleware");
 router.use("/:surveyId/questions", questionRouter);
 
 router
   .route("/")
   .get(getSurveys)
-  .post(validate(createSurveySchema), createSurvey);
+  .post(validate(createSurveySchema), requireAuth, createSurvey);
 router
   .route("/:id")
   .get(validate(getSurveySchema), getSurvey)
-  .put(validate(updateSurveySchema), updateSurvey)
-  .delete(validate(deleteSurveySchema), deleteSurvey);
+  .put(validate(updateSurveySchema), requireAuth, updateSurvey)
+  .delete(validate(deleteSurveySchema), requireAuth, deleteSurvey);
 
 module.exports = router;

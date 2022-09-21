@@ -17,6 +17,7 @@ exports.getQuestions = async (req, res, next) => {
 exports.createQuestion = async (req, res, next) => {
   try {
     if (req.params.surveyId) {
+      req.body.user = req.user.id;
       req.body.survey = req.params.surveyId;
       const question = await Question.create(req.body);
       return res.status(201).json({ question });
@@ -48,6 +49,13 @@ exports.updateQuestion = async (req, res, next) => {
       return res.status(404).json({ message: "No question found" });
     }
 
+    // check ownership
+    if (question.user.toString() !== req.user.id) {
+      return next(
+        new ErrorResponse("Not authorized to access this route", 401)
+      );
+    }
+
     question = await Question.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -65,6 +73,13 @@ exports.deleteQuestion = async (req, res, next) => {
     const question = await Question.findById(req.params.id);
     if (!question) {
       return res.status(404).json({ message: "No question found" });
+    }
+
+    // check ownership
+    if (question.user.toString() !== req.user.id) {
+      return next(
+        new ErrorResponse("Not authorized to access this route", 401)
+      );
     }
 
     question.remove();

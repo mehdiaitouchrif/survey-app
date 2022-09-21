@@ -1,4 +1,5 @@
 const Survey = require("../models/survey.model");
+const ErrorResponse = require("../utils/error.utils");
 
 // Get surveys
 exports.getSurveys = async (req, res, next) => {
@@ -10,6 +11,7 @@ exports.getSurveys = async (req, res, next) => {
 // Create survey
 exports.createSurvey = async (req, res, next) => {
   try {
+    req.body.user = req.user.id;
     const survey = await await Survey.create(req.body);
     res.status(201).json({ survey });
   } catch (error) {
@@ -39,6 +41,13 @@ exports.updateSurvey = async (req, res, next) => {
       return res.status(404).json({ message: "No survey found" });
     }
 
+    // check ownership
+    if (survey.user.toString() !== req.user.id) {
+      return next(
+        new ErrorResponse("Not authorized to access this route", 401)
+      );
+    }
+
     survey = await Survey.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -56,6 +65,13 @@ exports.deleteSurvey = async (req, res, next) => {
     const survey = await Survey.findById(req.params.id).populate("questions");
     if (!survey) {
       return res.status(404).json({ message: "No survey found" });
+    }
+
+    // check ownership
+    if (survey.user.toString() !== req.user.id) {
+      return next(
+        new ErrorResponse("Not authorized to access this route", 401)
+      );
     }
 
     survey.remove();
