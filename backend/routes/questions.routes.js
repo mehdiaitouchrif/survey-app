@@ -1,4 +1,5 @@
 const express = require("express");
+const validate = require("../middleware/validate.middleware");
 const {
   getQuestion,
   createQuestion,
@@ -6,13 +7,22 @@ const {
   updateQuestion,
   deleteQuestion,
 } = require("../controllers/questions.controllers");
+const {
+  createQuestionSchema,
+  getQuestionSchema,
+  updateQuestionSchema,
+  deleteQuestionSchema,
+} = require("../schemas/question.schemas");
 const router = express.Router({ mergeParams: true });
 
-router.route("/").post(createQuestion).get(getQuestions);
+router
+  .route("/")
+  .post(validate(createQuestionSchema), createQuestion)
+  .get(getQuestions);
 router
   .route("/:id")
-  .get(getQuestion)
-  .put(updateQuestion)
-  .delete(deleteQuestion);
+  .get(validate(getQuestionSchema), getQuestion)
+  .put(validate(updateQuestionSchema), updateQuestion)
+  .delete(validate(deleteQuestionSchema), deleteQuestion);
 
 module.exports = router;
