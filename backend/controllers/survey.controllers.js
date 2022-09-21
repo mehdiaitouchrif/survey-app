@@ -9,43 +9,59 @@ exports.getSurveys = async (req, res, next) => {
 
 // Create survey
 exports.createSurvey = async (req, res, next) => {
-  const survey = await await Survey.create(req.body);
-  res.status(201).json({ survey });
+  try {
+    const survey = await await Survey.create(req.body);
+    res.status(201).json({ survey });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Get survey
 exports.getSurvey = async (req, res, next) => {
-  const survey = await Survey.findById(req.params.id).populate("questions");
-  if (!survey) {
-    return res.status(404).json({ message: "No survey found" });
-  }
+  try {
+    const survey = await Survey.findById(req.params.id).populate("questions");
+    if (!survey) {
+      return res.status(404).json({ message: "No survey found" });
+    }
 
-  res.status(200).json({ survey });
+    res.status(200).json({ survey });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Update survey
 exports.updateSurvey = async (req, res, next) => {
-  let survey = await Survey.findById(req.params.id).populate("questions");
-  if (!survey) {
-    return res.status(404).json({ message: "No survey found" });
+  try {
+    let survey = await Survey.findById(req.params.id).populate("questions");
+    if (!survey) {
+      return res.status(404).json({ message: "No survey found" });
+    }
+
+    survey = await Survey.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({ survey });
+  } catch (error) {
+    next(error);
   }
-
-  survey = await Survey.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  res.status(200).json({ survey });
 };
 
 // Delete survey
 exports.deleteSurvey = async (req, res, next) => {
-  const survey = await Survey.findById(req.params.id).populate("questions");
-  if (!survey) {
-    return res.status(404).json({ message: "No survey found" });
+  try {
+    const survey = await Survey.findById(req.params.id).populate("questions");
+    if (!survey) {
+      return res.status(404).json({ message: "No survey found" });
+    }
+
+    survey.remove();
+
+    res.status(200).json({ message: "Survey removed" });
+  } catch (error) {
+    next(error);
   }
-
-  survey.remove();
-
-  res.status(200).json({ message: "Survey removed" });
 };
