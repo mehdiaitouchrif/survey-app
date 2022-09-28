@@ -8,9 +8,6 @@ const errorHandler = require("./middleware/error.middleware");
 const app = express();
 dotenv.config();
 
-// connect to mongodb
-connectDB();
-
 // middleware
 app.use(express.json());
 app.use(morgan("dev"));
@@ -30,5 +27,8 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
+  // connect to mongodb
+  connectDB();
+
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
